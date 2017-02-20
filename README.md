@@ -15,8 +15,7 @@ A contacts picker component using Apple's Contacts framework.
 This library was originally forked from [EPContactsPicker](https://github.com/ipraba/EPContactsPicker), which is no longer maintained.
 
 ## Preview
-![Single Selection](https://raw.githubusercontent.com/jettf/JFContactsPicker/master/Screenshots/Screen1.png)    
-![Multi Selection](https://raw.githubusercontent.com/jettf/JFContactsPicker/master/Screenshots/Screen2.png)
+![Single Selection](https://raw.githubusercontent.com/jettf/JFContactsPicker/master/Screenshots/Screen1.png)![Multi Selection](https://raw.githubusercontent.com/jettf/JFContactsPicker/master/Screenshots/Screen2.png)
 
 ## Installation
 
