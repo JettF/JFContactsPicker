@@ -87,6 +87,7 @@ JFContactsPicker is available under the MIT license. See the [LICENSE](https://g
 [@AnthonyMDev](https://github.com/AnthonyMDev)
 
 *Original Authors*
+
 [@ipraba](https://github.com/ipraba)
 
 [@Sorix](https://github.com/Sorix)
