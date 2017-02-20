@@ -33,7 +33,6 @@ open class ContactsPicker: UITableViewController, UISearchResultsUpdating, UISea
     
     // MARK: - Properties
     
-    public internal(set) var resultSearchController: UISearchController?
     public private(set) lazy var contactsStore: CNContactStore = { return CNContactStore() }()
     
     /// Contacts ordered in dictionary alphabetically using `sortOrder`.
@@ -74,6 +73,14 @@ open class ContactsPicker: UITableViewController, UISearchResultsUpdating, UISea
         }
     }
     
+    public let resultSearchController: UISearchController = {
+        let controller = UISearchController(searchResultsController: nil)
+        controller.dimsBackgroundDuringPresentation = false
+        controller.hidesNavigationBarDuringPresentation = false
+        controller.searchBar.sizeToFit()
+        return controller
+    }()
+    
     // MARK: - Initializers
     
     // TODO: Document
@@ -106,21 +113,16 @@ open class ContactsPicker: UITableViewController, UISearchResultsUpdating, UISea
         
         registerContactCell()
         initializeBarButtons()
-        initializeSearchBar()
+        setUpSearchBar()
         reloadContacts()
     }
     
-    func initializeSearchBar() {
-        self.resultSearchController = ( {
-            let controller = UISearchController(searchResultsController: nil)
-            controller.searchResultsUpdater = self
-            controller.dimsBackgroundDuringPresentation = false
-            controller.hidesNavigationBarDuringPresentation = false
-            controller.searchBar.sizeToFit()
-            controller.searchBar.delegate = self
-            self.tableView.tableHeaderView = controller.searchBar
-            return controller
-        })()
+    func setUpSearchBar() {
+        let controller = self.resultSearchController
+        controller.searchResultsUpdater = self
+        controller.searchBar.sizeToFit()
+        controller.searchBar.delegate = self
+        self.tableView.tableHeaderView = controller.searchBar
     }
     
     func initializeBarButtons() {
@@ -289,19 +291,15 @@ open class ContactsPicker: UITableViewController, UISearchResultsUpdating, UISea
     // MARK: - Table View DataSource
     
     override open func numberOfSections(in tableView: UITableView) -> Int {
-        if let searchController = resultSearchController, searchController.isActive { return 1 }
+        if resultSearchController.isActive { return 1 }
         return sortedContactKeys.count
     }
     
     override open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let searchController = resultSearchController, searchController.isActive {
-            return filteredContacts.count
-        }
-        
+        if resultSearchController.isActive { return filteredContacts.count }
         if let contactsForSection = orderedContacts[sortedContactKeys[section]] {
             return contactsForSection.count
         }
-        
         return 0
     }
     
@@ -313,9 +311,8 @@ open class ContactsPicker: UITableViewController, UISearchResultsUpdating, UISea
         //Convert CNContact to Contact
         let contact: Contact
         
-        if let searchController = resultSearchController, searchController.isActive {
+        if resultSearchController.isActive {
             contact = Contact(contact: filteredContacts[(indexPath as NSIndexPath).row])
-            
         } else {
             guard let contactsForSection = orderedContacts[sortedContactKeys[(indexPath as NSIndexPath).section]] else {
                 assertionFailure()
@@ -352,10 +349,7 @@ open class ContactsPicker: UITableViewController, UISearchResultsUpdating, UISea
         }
         else {
             //Single selection code
-            if let searchController = resultSearchController, searchController.isActive {
-                searchController.isActive = false
-            }
-            
+            if resultSearchController.isActive { resultSearchController.isActive = false }
 			self.contactDelegate?.contactPicker(self, didSelectContact: selectedContact)
         }
     }
@@ -365,25 +359,21 @@ open class ContactsPicker: UITableViewController, UISearchResultsUpdating, UISea
     }
     
     override open func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
-        if let searchController = resultSearchController, searchController.isActive { return 0 }
-        
+        if resultSearchController.isActive { return 0 }
         return sortedContactKeys.index(of: title)!
     }
     
     override open func sectionIndexTitles(for tableView: UITableView) -> [String]? {
         if shouldShowIndexBar {
-            if let searchController = resultSearchController, searchController.isActive { return nil }
-            
+            if resultSearchController.isActive { return nil }
             return sortedContactKeys
-            
         } else {
             return nil
         }
     }
     
     override open func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if let searchController = resultSearchController, searchController.isActive { return nil }
-        
+        if resultSearchController.isActive { return nil }
         return sortedContactKeys[section]
     }
     
@@ -404,7 +394,7 @@ open class ContactsPicker: UITableViewController, UISearchResultsUpdating, UISea
     
     open func updateSearchResults(for searchController: UISearchController)
     {
-        if let searchText = resultSearchController?.searchBar.text , searchController.isActive {
+        if let searchText = resultSearchController.searchBar.text , searchController.isActive {
             
             let predicate: NSPredicate
             if searchText.characters.count > 0 {
