@@ -52,7 +52,7 @@ open class Contact {
         
         var numbers: [(String, String)] = []
 		for phoneNumber in contact.phoneNumbers {
-			guard let phoneLabel = phoneNumber.label else { continue }
+			let phoneLabel = phoneNumber.label ?? ""
 			let phone = phoneNumber.value.stringValue
 			
 			numbers.append((phone,phoneLabel))
@@ -61,7 +61,7 @@ open class Contact {
 		
         var emails: [(String, String)] = []
 		for emailAddress in contact.emailAddresses {
-			guard let emailLabel = emailAddress.label else { continue }
+			let emailLabel = emailAddress.label ?? ""
 			let email = emailAddress.value as String
 			
 			emails.append((email,emailLabel))
