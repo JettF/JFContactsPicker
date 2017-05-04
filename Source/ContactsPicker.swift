@@ -29,7 +29,7 @@ public enum SubtitleCellValue{
     case organization
 }
 
-open class ContactsPicker: UITableViewController, UISearchResultsUpdating, UISearchBarDelegate {
+open class ContactsPicker: UITableViewController, UISearchBarDelegate {
     
     // MARK: - Properties
     
@@ -73,12 +73,11 @@ open class ContactsPicker: UITableViewController, UISearchResultsUpdating, UISea
         }
     }
     
-    public let resultSearchController: UISearchController = {
-        let controller = UISearchController(searchResultsController: nil)
-        controller.dimsBackgroundDuringPresentation = false
-        controller.hidesNavigationBarDuringPresentation = false
-        controller.searchBar.sizeToFit()
-        return controller
+    public lazy var searchBar: UISearchBar = {
+        let searchBar = UISearchBar(frame: CGRect.zero)
+        searchBar.placeholder = "Search"
+        searchBar.delegate = self
+        return searchBar
     }()
     
     // MARK: - Initializers
@@ -118,11 +117,8 @@ open class ContactsPicker: UITableViewController, UISearchResultsUpdating, UISea
     }
     
     func setUpSearchBar() {
-        let controller = self.resultSearchController
-        controller.searchResultsUpdater = self
-        controller.searchBar.sizeToFit()
-        controller.searchBar.delegate = self
-        self.tableView.tableHeaderView = controller.searchBar
+        searchBar.sizeToFit()
+        self.tableView.tableHeaderView = searchBar
     }
     
     func initializeBarButtons() {
@@ -291,12 +287,12 @@ open class ContactsPicker: UITableViewController, UISearchResultsUpdating, UISea
     // MARK: - Table View DataSource
     
     override open func numberOfSections(in tableView: UITableView) -> Int {
-        if resultSearchController.isActive { return 1 }
+        if let searchText = searchBar.text, !searchText.isEmpty { return 1 }
         return sortedContactKeys.count
     }
     
     override open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if resultSearchController.isActive { return filteredContacts.count }
+        if let searchText = searchBar.text, !searchText.isEmpty { return filteredContacts.count }
         if let contactsForSection = orderedContacts[sortedContactKeys[section]] {
             return contactsForSection.count
         }
@@ -311,8 +307,9 @@ open class ContactsPicker: UITableViewController, UISearchResultsUpdating, UISea
         //Convert CNContact to Contact
         let contact: Contact
         
-        if resultSearchController.isActive {
+        if let searchText = searchBar.text, !searchText.isEmpty {
             contact = Contact(contact: filteredContacts[(indexPath as NSIndexPath).row])
+            
         } else {
             guard let contactsForSection = orderedContacts[sortedContactKeys[(indexPath as NSIndexPath).section]] else {
                 assertionFailure()
@@ -349,7 +346,7 @@ open class ContactsPicker: UITableViewController, UISearchResultsUpdating, UISea
         }
         else {
             //Single selection code
-            if resultSearchController.isActive { resultSearchController.isActive = false }
+            if searchBar.isFirstResponder { searchBar.resignFirstResponder() }
 			self.contactDelegate?.contactPicker(self, didSelectContact: selectedContact)
         }
     }
@@ -359,13 +356,13 @@ open class ContactsPicker: UITableViewController, UISearchResultsUpdating, UISea
     }
     
     override open func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
-        if resultSearchController.isActive { return 0 }
+        if let searchText = searchBar.text, !searchText.isEmpty { return 0 }
         return sortedContactKeys.index(of: title)!
     }
     
     override open func sectionIndexTitles(for tableView: UITableView) -> [String]? {
         if shouldShowIndexBar {
-            if resultSearchController.isActive { return nil }
+            if let searchText = searchBar.text, !searchText.isEmpty { return nil }
             return sortedContactKeys
         } else {
             return nil
@@ -373,7 +370,7 @@ open class ContactsPicker: UITableViewController, UISearchResultsUpdating, UISea
     }
     
     override open func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if resultSearchController.isActive { return nil }
+        if let searchText = searchBar.text, !searchText.isEmpty { return nil }
         return sortedContactKeys[section]
     }
     
@@ -390,11 +387,19 @@ open class ContactsPicker: UITableViewController, UISearchResultsUpdating, UISea
         contactDelegate?.contactPicker(self, didSelectMultipleContacts: selectedContacts)
     }
     
-    // MARK: - Search Actions
+    // MARK: - UISearchBarDelegate
     
-    open func updateSearchResults(for searchController: UISearchController)
+    public func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.setShowsCancelButton(true, animated: true)
+    }
+    
+    public func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        updateSearchResults(for: searchBar)
+    }
+    
+    open func updateSearchResults(for searchBar: UISearchBar)
     {
-        if let searchText = resultSearchController.searchBar.text , searchController.isActive {
+        if let searchText = searchBar.text, !searchText.isEmpty {
             
             let predicate: NSPredicate
             if searchText.characters.count > 0 {
@@ -417,13 +422,30 @@ open class ContactsPicker: UITableViewController, UISearchResultsUpdating, UISea
             catch {
                 print("Error!")
             }
+            
+        } else {
+            self.tableView.reloadData()
         }
     }
     
+    public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+    
     open func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.setShowsCancelButton(false, animated: true)
+        
+        searchBar.text = nil
         
         DispatchQueue.main.async(execute: {
-            self.tableView.reloadData()
+            searchBar.resignFirstResponder()
+        })
+    }
+    
+    public func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        DispatchQueue.main.async(execute: {
+            searchBar.setShowsCancelButton(false, animated: true)
+            self.updateSearchResults(for: searchBar)
         })
     }
     

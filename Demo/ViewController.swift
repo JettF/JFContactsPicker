@@ -8,7 +8,7 @@ import UIKit
 class ViewController: UIViewController, ContactsPickerDelegate {
   
   @IBAction func onTouchShowMeContactsButton(_ sender: AnyObject) {
-    let contactPickerScene = ContactsPicker(delegate: self, multiSelection:true, subtitleCellType: SubtitleCellValue.email)
+    let contactPickerScene = ContactsPicker(delegate: self, multiSelection: true, subtitleCellType: SubtitleCellValue.email)
     let navigationController = UINavigationController(rootViewController: contactPickerScene)
     self.present(navigationController, animated: true, completion: nil)
     
