@@ -29,7 +29,7 @@ public enum SubtitleCellValue{
     case organization
 }
 
-open class ContactsPicker: UITableViewController, UISearchBarDelegate {
+open class ContactsPicker: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
     
     // MARK: - Properties
     
@@ -80,9 +80,24 @@ open class ContactsPicker: UITableViewController, UISearchBarDelegate {
         return searchBar
     }()
     
+    public private(set) lazy var tableView: UITableView = {
+        let tableView = UITableView(frame: CGRect.zero, style: .plain)
+        tableView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+        tableView.delegate = self
+        tableView.dataSource = self
+        return tableView
+    }()
+    
     // MARK: - Initializers
     
-    // TODO: Document
+    /// The designated initializer.
+    ///
+    /// - Parameters:
+    ///   - delegate:           The delegate for the picker. Defaults to `nil`.
+    ///   - multiSelection:     `true` for multiple selection, `false` for single selection. Defaults to `false`.
+    ///   - showIndexBar:       `true` to show the index bar, `false` to hide the index bar. Defaults to `true`.
+    ///   - subtitleCellType:   The value type to display in the subtitle label on the contact cells.
+    ///                         Defaults to `.phoneNumber`.
     public init(delegate: ContactsPickerDelegate? = nil,
                 multiSelection: Bool = false,
                 showIndexBar: Bool = true,
@@ -91,7 +106,7 @@ open class ContactsPicker: UITableViewController, UISearchBarDelegate {
         self.subtitleCellValue = subtitleCellType
         self.shouldShowIndexBar = showIndexBar
         
-        super.init(style: .plain)
+        super.init(nibName: nil, bundle: nil)
         
         contactDelegate = delegate
     }
@@ -105,6 +120,10 @@ open class ContactsPicker: UITableViewController, UISearchBarDelegate {
     }
     
     // MARK: - Lifecycle Methods
+    
+    open override func loadView() {
+        self.view = tableView
+    }
     
     override open func viewDidLoad() {
         super.viewDidLoad()
@@ -286,12 +305,12 @@ open class ContactsPicker: UITableViewController, UISearchBarDelegate {
     
     // MARK: - Table View DataSource
     
-    override open func numberOfSections(in tableView: UITableView) -> Int {
+    open func numberOfSections(in tableView: UITableView) -> Int {
         if let searchText = searchBar.text, !searchText.isEmpty { return 1 }
         return sortedContactKeys.count
     }
     
-    override open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if let searchText = searchBar.text, !searchText.isEmpty { return filteredContacts.count }
         if let contactsForSection = orderedContacts[sortedContactKeys[section]] {
             return contactsForSection.count
@@ -301,7 +320,7 @@ open class ContactsPicker: UITableViewController, UISearchBarDelegate {
     
     // MARK: - Table View Delegates
     
-    override open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! ContactCell
         cell.accessoryType = UITableViewCellAccessoryType.none
         //Convert CNContact to Contact
@@ -327,7 +346,7 @@ open class ContactsPicker: UITableViewController, UISearchBarDelegate {
         return cell
     }
     
-    override open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         let cell = tableView.cellForRow(at: indexPath) as! ContactCell
         let selectedContact =  cell.contact!
@@ -347,20 +366,20 @@ open class ContactsPicker: UITableViewController, UISearchBarDelegate {
         else {
             //Single selection code
             if searchBar.isFirstResponder { searchBar.resignFirstResponder() }
-			self.contactDelegate?.contactPicker(self, didSelectContact: selectedContact)
+            self.contactDelegate?.contactPicker(self, didSelectContact: selectedContact)
         }
     }
     
-    override open func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    open func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60.0
     }
     
-    override open func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
+    open func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
         if let searchText = searchBar.text, !searchText.isEmpty { return 0 }
         return sortedContactKeys.index(of: title)!
     }
     
-    override open func sectionIndexTitles(for tableView: UITableView) -> [String]? {
+    open func sectionIndexTitles(for tableView: UITableView) -> [String]? {
         if shouldShowIndexBar {
             if let searchText = searchBar.text, !searchText.isEmpty { return nil }
             return sortedContactKeys
@@ -369,7 +388,7 @@ open class ContactsPicker: UITableViewController, UISearchBarDelegate {
         }
     }
     
-    override open func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    open func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if let searchText = searchBar.text, !searchText.isEmpty { return nil }
         return sortedContactKeys[section]
     }
