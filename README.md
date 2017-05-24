@@ -56,7 +56,7 @@ Initialize the picker by passing the delegate, multiselection option, and the se
 
     let contactPicker = ContactsPicker(delegate: self, multiSelection:false, subtitleCellType: .email)
     let navigationController = UINavigationController(rootViewController: contactPicker)
-    self.presentViewController(navigationController, animated: true, completion: nil)
+    self.present(navigationController, animated: true, completion: nil)
 
 ## Delegates
 
