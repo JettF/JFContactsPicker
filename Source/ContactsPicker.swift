@@ -395,14 +395,14 @@ open class ContactsPicker: UIViewController, UITableViewDelegate, UITableViewDat
     
     // MARK: - Button Actions
     
-    func onTouchCancelButton() {
+    @objc func onTouchCancelButton() {
         // TODO: Set up errors
         contactDelegate?.contactPicker(self, didCancel: NSError(domain: "JFContactsPickerErrorDomain",
                                                                 code: 2,
                                                                 userInfo: [ NSLocalizedDescriptionKey: "User Canceled Selection"]))
     }
     
-    func onTouchDoneButton() {
+    @objc func onTouchDoneButton() {
         contactDelegate?.contactPicker(self, didSelectMultipleContacts: selectedContacts)
     }
     
