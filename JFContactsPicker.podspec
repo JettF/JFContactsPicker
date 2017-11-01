@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name             = "JFContactsPicker"
   s.module_name      = "JFContactsPicker"
-  s.version          = "1.0.3"
+  s.version          = "1.1.0"
   s.summary          = "A contacts picker component for iOS written in swift using new contacts framwork. Forked from 'EPContactsPicker'."
   s.description      = <<-DESC
 Features
@@ -15,7 +15,7 @@ DESC
 
   s.homepage         = "https://github.com/JettF/JFContactsPicker"
   s.license          = 'MIT'
-  s.authors          = { "Jett Farmer" => "JettFarmer@gmail.com",
+  s.authors          = { "Jett Farmer" => "jettfarmer@gmail.com",
                          "Anthony Miller" => "AnthonyMDev@gmail.com"}
   s.source           = { :git => "https://github.com/jettf/JFContactsPicker.git", :tag => s.version.to_s }
   s.platform     = :ios, '9.0'
