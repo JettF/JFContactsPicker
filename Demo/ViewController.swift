@@ -23,6 +23,12 @@ class ViewController: UIViewController, ContactsPickerDelegate {
     func contactPicker(_: ContactsPicker, didSelectContact contact: Contact)
     {
         print("Contact \(contact.displayName) has been selected")
+        //Example: extract first postal address
+        print("Street: \(contact.streets[0].street)")
+        print("State: \(contact.states[0].state)")
+        print("PostalCode: \(contact.postals[0].postal)")
+        print("City: \(contact.cities[0].city)")
+        print("Country: \(contact.countries[0].country)")
     }
     
     func contactPicker(_: ContactsPicker, didCancel error: NSError)
