@@ -300,6 +300,7 @@ open class ContactsPicker: UIViewController, UITableViewDelegate, UITableViewDat
                 CNContactImageDataAvailableKey as CNKeyDescriptor,
                 CNContactPhoneNumbersKey as CNKeyDescriptor,
                 CNContactEmailAddressesKey as CNKeyDescriptor,
+                CNContactPostalAddressesKey as CNKeyDescriptor,
         ]
     }
     
