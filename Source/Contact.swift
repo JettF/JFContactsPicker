@@ -18,6 +18,11 @@ open class Contact {
     open let contactId: String?
     open let phoneNumbers: [(phoneNumber: String, phoneLabel: String)]
     open let emails: [(email: String, emailLabel: String )]
+    open let streets: [(street: String, streetLabel: String )]
+    open let states: [(state: String, stateLabel: String )]
+    open let postals: [(postal: String, postalLabel: String )]
+    open let cities: [(city: String, cityLabel: String )]
+    open let countries: [(country: String, countryLabel: String )]
 	
     public init (contact: CNContact) {
         firstName = contact.givenName
@@ -67,6 +72,51 @@ open class Contact {
 			emails.append((email,emailLabel))
 		}
         self.emails = emails
+	    
+	var streets: [(String, String)] = []
+		for streetAddress in contact.postalAddresses {
+			 let streetLabel = streetAddress.label ?? ""
+			 let street = streetAddress.value.street as String
+
+			 streets.append((street,streetLabel))
+		}
+        self.streets = streets
+        
+        var cities: [(String, String)] = []
+        	for cityAddress in contact.postalAddresses {
+            		let cityLabel = cityAddress.label ?? ""
+            		let city = cityAddress.value.city as String
+            
+            		cities.append((city,cityLabel))
+        }
+        self.cities = cities
+        
+        var states: [(String, String)] = []
+        	for stateAddress in contact.postalAddresses {
+            		let stateLabel = stateAddress.label ?? ""
+            		let state = stateAddress.value.state as String
+            
+            		states.append((state,stateLabel))
+        }
+        self.states = states
+        
+        var postals: [(String, String)] = []
+        	for postalAddress in contact.postalAddresses {
+            		let postalLabel = postalAddress.label ?? ""
+            		let postal = postalAddress.value.postalCode as String
+            
+            		postals.append((postal,postalLabel))
+        }
+        self.postals = postals
+        
+        var countries: [(String, String)] = []
+        	for countryAddress in contact.postalAddresses {
+            		let countryLabel = countryAddress.label ?? ""
+            		let country = countryAddress.value.country as String
+            
+            		countries.append((country,countryLabel))
+        }
+        self.countries = countries
         
     }
 	
