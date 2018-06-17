@@ -416,8 +416,7 @@ open class ContactsPicker: UIViewController, UITableViewDelegate, UITableViewDat
         updateSearchResults(for: searchBar)
     }
     
-    open func updateSearchResults(for searchBar: UISearchBar)
-    {
+    open func updateSearchResults(for searchBar: UISearchBar) {
         if let searchText = searchBar.text, !searchText.isEmpty {
             
             let predicate: NSPredicate
