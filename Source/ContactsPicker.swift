@@ -186,7 +186,7 @@ open class ContactsPicker: UIViewController, UITableViewDelegate, UITableViewDat
     
     private func getContacts(_ completion:  @escaping ContactsHandler) {
         // TODO: Set up error domain
-        let error = NSError(domain: "EPContactPickerErrorDomain", code: 1, userInfo: [NSLocalizedDescriptionKey: "No Contacts Access"])
+        let error = NSError(domain: "JFContactPickerErrorDomain", code: 1, userInfo: [NSLocalizedDescriptionKey: "No Contacts Access"])
         
         switch CNContactStore.authorizationStatus(for: CNEntityType.contacts) {
         case CNAuthorizationStatus.denied, CNAuthorizationStatus.restricted:
@@ -418,18 +418,11 @@ open class ContactsPicker: UIViewController, UITableViewDelegate, UITableViewDat
     
     open func updateSearchResults(for searchBar: UISearchBar) {
         if let searchText = searchBar.text, !searchText.isEmpty {
+            let predicate: NSPredicate = CNContact.predicateForContacts(matchingName: searchText)
             
-            let predicate: NSPredicate
-            if searchText.characters.count > 0 {
-                predicate = CNContact.predicateForContacts(matchingName: searchText)
-            } else {
-                predicate = CNContact.predicateForContactsInContainer(withIdentifier: contactsStore.defaultContainerIdentifier())
-            }
-            
-            let store = CNContactStore()
             do {
-                filteredContacts = try store.unifiedContacts(matching: predicate,
-                                                             keysToFetch: allowedContactKeys())
+                filteredContacts = try contactsStore.unifiedContacts(matching: predicate,
+                                                                     keysToFetch: allowedContactKeys())
                 if let shouldIncludeContact = shouldIncludeContact {
                     filteredContacts = filteredContacts.filter(shouldIncludeContact)
                 }
@@ -438,7 +431,9 @@ open class ContactsPicker: UIViewController, UITableViewDelegate, UITableViewDat
                 
             }
             catch {
-                print("Error!")
+                contactDelegate?.contactPicker(self, didContactFetchFailed: NSError(domain: "JFContactsPickerErrorDomain",
+                                                                                    code: 3,
+                                                                                    userInfo: [ NSLocalizedDescriptionKey: "Failed to fetch contacts"]))
             }
             
         } else {
@@ -452,7 +447,7 @@ open class ContactsPicker: UIViewController, UITableViewDelegate, UITableViewDat
     
     open func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.setShowsCancelButton(false, animated: true)
-        
+
         searchBar.text = nil
         
         DispatchQueue.main.async(execute: {
