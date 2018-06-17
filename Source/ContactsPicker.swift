@@ -419,26 +419,30 @@ open class ContactsPicker: UIViewController, UITableViewDelegate, UITableViewDat
     open func updateSearchResults(for searchBar: UISearchBar) {
         if let searchText = searchBar.text, !searchText.isEmpty {
             let predicate: NSPredicate = CNContact.predicateForContacts(matchingName: searchText)
-            
-            do {
-                filteredContacts = try contactsStore.unifiedContacts(matching: predicate,
-                                                                     keysToFetch: allowedContactKeys())
-                if let shouldIncludeContact = shouldIncludeContact {
-                    filteredContacts = filteredContacts.filter(shouldIncludeContact)
-                }
-                
-                self.tableView.reloadData()
-                
-            }
-            catch {
-                contactDelegate?.contactPicker(self, didContactFetchFailed: NSError(domain: "JFContactsPickerErrorDomain",
-                                                                                    code: 3,
-                                                                                    userInfo: [ NSLocalizedDescriptionKey: "Failed to fetch contacts"]))
-            }
-            
+            updateContacts(with: predicate)
+        
         } else {
             self.tableView.reloadData()
         }
+    }
+    
+    private func updateContacts(with predicate: NSPredicate) {
+        do {
+            filteredContacts = try contactsStore.unifiedContacts(matching: predicate,
+                                                                 keysToFetch: allowedContactKeys())
+            if let shouldIncludeContact = shouldIncludeContact {
+                filteredContacts = filteredContacts.filter(shouldIncludeContact)
+            }
+            
+            self.tableView.reloadData()
+            
+        }
+        catch {
+            contactDelegate?.contactPicker(self, didContactFetchFailed: NSError(domain: "JFContactsPickerErrorDomain",
+                                                                                code: 3,
+                                                                                userInfo: [ NSLocalizedDescriptionKey: "Failed to fetch contacts"]))
+        }
+        
     }
     
     public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
