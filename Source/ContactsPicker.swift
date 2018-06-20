@@ -6,10 +6,42 @@
 import UIKit
 import Contacts
 
+/// Objects that conform to this protocol can become a `delegate` for a `ContactsPicker` instance.
 public protocol ContactsPickerDelegate: class {
+    
+    /// This method is called when the `contactPicker` fails to fetch contacts from the `store`.
+    ///
+    /// - Parameters:
+    ///   - _: The contactPicker whose fetch failed.
+    ///   - error: An `NSError` instance that describes the failure.
     func contactPicker(_: ContactsPicker, didContactFetchFailed error: NSError)
+    
+    //TODO: Remove the error from this method. It doesn't make sense for an error to be happen when the user presses cancel.
+    /// This method is called when the user presses "Cancel" on the `contactPicker`.
+    /// The delegate may choose how to respond to this. You may want to dismiss the picker, or respond in some
+    /// other way.
+    ///
+    /// - Parameters:
+    ///   - _: The `contactPicker` instance which called this method.
+    ///   - error: An `NSError` instance describing the cancellation.
     func contactPicker(_: ContactsPicker, didCancel error: NSError)
+    
+    /// Called when a contact is selected.
+    /// - Note: This method is called when `multiSelectEnabled` is `false`. If `multiSelectEnabled` is `true` then
+    /// `contactPicker(_: ContactsPicker, didSelectMultipleContacts contacts: [Contact])` is called instead.
+    ///
+    /// - Parameters:
+    ///   - _: The `contactPicker` instance which called this method.
+    ///   - contact: The `Contact` that was selected by the user.
     func contactPicker(_: ContactsPicker, didSelectContact contact: Contact)
+    
+    /// Called when the user finishes selecting multiple contacts.
+    /// - Note: This method is called when `multiSelectEnabled` is `true`. If `multiSelectEnabled` is `false` then
+    /// `func contactPicker(_: ContactsPicker, didSelectContact contact: Contact)` is called instead.
+    ///
+    /// - Parameters:
+    ///   - _: The `contactPicker` instance which called this method.
+    ///   - contacts: An array of `Contact`'s selected by the user.
     func contactPicker(_: ContactsPicker, didSelectMultipleContacts contacts: [Contact])
 }
 
