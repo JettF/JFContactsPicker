@@ -267,25 +267,29 @@ open class ContactsPicker: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     private func firstLetter(for contact: CNContact) -> String? {
-        var firstLetter: String? = nil
+        var firstCharacter: Character? = nil
         
         switch sortOrder {
             
         case .userDefault where CNContactsUserDefaults.shared().sortOrder == .familyName:
             fallthrough
+        
         case .familyName:
-            firstLetter = contact.familyName[0..<1]
+            firstCharacter = contact.familyName.first
             
         case .userDefault where CNContactsUserDefaults.shared().sortOrder == .givenName:
             fallthrough
+        
         case .givenName:
             fallthrough
+        
         default:
-            firstLetter = contact.givenName[0..<1]
+            firstCharacter = contact.givenName.first
         }
         
-        guard let letter = firstLetter, letter.containsAlphabets() else { return nil }
-        return letter
+        guard let letter = firstCharacter else { return nil }
+        let firstLetter = String(letter)
+        return firstLetter.containsAlphabets() ? firstLetter : nil    
     }
     
     func allowedContactKeys() -> [CNKeyDescriptor]{
