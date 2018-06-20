@@ -16,7 +16,6 @@ public protocol ContactsPickerDelegate: class {
     ///   - error: An `NSError` instance that describes the failure.
     func contactPicker(_: ContactsPicker, didContactFetchFailed error: NSError)
     
-    //TODO: Remove the error from this method. It doesn't make sense for an error to be happen when the user presses cancel.
     /// This method is called when the user presses "Cancel" on the `contactPicker`.
     /// The delegate may choose how to respond to this. You may want to dismiss the picker, or respond in some
     /// other way.
@@ -24,7 +23,7 @@ public protocol ContactsPickerDelegate: class {
     /// - Parameters:
     ///   - _: The `contactPicker` instance which called this method.
     ///   - error: An `NSError` instance describing the cancellation.
-    func contactPicker(_: ContactsPicker, didCancel error: NSError)
+    func contactPickerDidCancel(_: ContactsPicker)
     
     /// Called when a contact is selected.
     /// - Note: This method is called when `multiSelectEnabled` is `false`. If `multiSelectEnabled` is `true` then
@@ -47,7 +46,7 @@ public protocol ContactsPickerDelegate: class {
 
 public extension ContactsPickerDelegate {
     func contactPicker(_: ContactsPicker, didContactFetchFailed error: NSError) { }
-    func contactPicker(_: ContactsPicker, didCancel error: NSError) { }
+    func contactPickerDidCancel(_: ContactsPicker) { }
     func contactPicker(_: ContactsPicker, didSelectContact contact: Contact) { }
     func contactPicker(_: ContactsPicker, didSelectMultipleContacts contacts: [Contact]) { }
 }
@@ -432,10 +431,7 @@ open class ContactsPicker: UIViewController, UITableViewDelegate, UITableViewDat
     // MARK: - Button Actions
     
     @objc func onTouchCancelButton() {
-        // TODO: Set up errors
-        contactDelegate?.contactPicker(self, didCancel: NSError(domain: "JFContactsPickerErrorDomain",
-                                                                code: 2,
-                                                                userInfo: [ NSLocalizedDescriptionKey: "User Canceled Selection"]))
+        contactDelegate?.contactPickerDidCancel(self)
     }
     
     @objc func onTouchDoneButton() {

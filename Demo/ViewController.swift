@@ -25,8 +25,7 @@ class ViewController: UIViewController, ContactsPickerDelegate {
         print("Contact \(contact.displayName) has been selected")
     }
     
-    func contactPicker(_: ContactsPicker, didCancel error: NSError)
-    {
+    func contactPickerDidCancel(_: ContactsPicker) {
         print("User canceled the selection");
     }
     
