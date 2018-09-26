@@ -64,10 +64,10 @@ Initialize the picker by passing the delegate, multiselection option, and the se
 ContactsPicker provides you four delegate methods for responding to the picker's events.
 
 ```swift
-func contactPicker(_: ContactsPicker, didContactFetchFailed error : NSError)
-func contactPicker(_: ContactsPicker, didCancel error : NSError)
-func contactPicker(_: ContactsPicker, didSelectContact contact : Contact)
-func contactPicker(_: ContactsPicker, didSelectMultipleContacts contacts : [Contact])
+func contactPicker(_: ContactsPicker, didContactFetchFailed error: NSError)
+func contactPickerDidCancel(_: ContactsPicker)
+func contactPicker(_: ContactsPicker, didSelectContact contact: Contact)
+func contactPicker(_: ContactsPicker, didSelectMultipleContacts contacts: [Contact])
 ```
 
 ## Contact Object
