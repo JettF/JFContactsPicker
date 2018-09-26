@@ -14,34 +14,34 @@ open class Contact {
      */
     
     /// The first name of the contact.
-    open let firstName: String
+    public let firstName: String
     
     /// The last name of the contact.
-    open let lastName: String
+    public let lastName: String
     
     /// The name of the company the contact works for.
-    open let company: String
+    public let company: String
     
     /// A thumbnail image to be displayed on a `UITableViewCell`
-    open let thumbnailProfileImage: UIImage?
+    public let thumbnailProfileImage: UIImage?
     
     /// The image to be displayed when the contact is selected.
-    open let profileImage: UIImage?
+    public let profileImage: UIImage?
     
     /// The contact's birthday.
-    open let birthday: Date?
+    public let birthday: Date?
     
     /// The contact's birthday stored as a string.
-    open let birthdayString: String?
+    public let birthdayString: String?
     
     /// The unique identifier for the contact in the phone database.
-    open let contactId: String?
+    public let contactId: String?
     
     /// An array of the phone numbers associated with the contact.
-    open let phoneNumbers: [(phoneNumber: String, phoneLabel: String)]
+    public let phoneNumbers: [(phoneNumber: String, phoneLabel: String)]
     
     /// An array of emails associated with the contact,
-    open let emails: [(email: String, emailLabel: String )]
+    public let emails: [(email: String, emailLabel: String )]
     
     private static let dateFormatter: DateFormatter = DateFormatter()
     

@@ -22,7 +22,6 @@ public protocol ContactsPickerDelegate: class {
     ///
     /// - Parameters:
     ///   - _: The `contactPicker` instance which called this method.
-    ///   - error: An `NSError` instance describing the cancellation.
     func contactPickerDidCancel(_: ContactsPicker)
     
     /// Called when a contact is selected.
@@ -172,11 +171,11 @@ open class ContactsPicker: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     func initializeBarButtons() {
-        let cancelButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.cancel, target: self, action: #selector(onTouchCancelButton))
+        let cancelButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.cancel, target: self, action: #selector(onTouchCancelButton))
         self.navigationItem.leftBarButtonItem = cancelButton
         
         if multiSelectEnabled {
-            let doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.done, target: self, action: #selector(onTouchDoneButton))
+            let doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.done, target: self, action: #selector(onTouchDoneButton))
             self.navigationItem.rightBarButtonItem = doneButton
             
         }
@@ -225,8 +224,8 @@ open class ContactsPicker: UIViewController, UITableViewDelegate, UITableViewDat
             
             let productName = Bundle.main.infoDictionary!["CFBundleName"]!
             
-            let alert = UIAlertController(title: "Unable to access contacts", message: "\(productName) does not have access to contacts. Kindly enable it in privacy settings ", preferredStyle: UIAlertControllerStyle.alert)
-            let okAction = UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: {  action in
+            let alert = UIAlertController(title: "Unable to access contacts", message: "\(productName) does not have access to contacts. Kindly enable it in privacy settings ", preferredStyle: UIAlertController.Style.alert)
+            let okAction = UIAlertAction(title: "Ok", style: UIAlertAction.Style.default, handler: {  action in
                 self.contactDelegate?.contactPicker(self, didContactFetchFailed: error)
                 completion([], error)
                 self.dismiss(animated: true, completion: nil)
@@ -357,7 +356,7 @@ open class ContactsPicker: UIViewController, UITableViewDelegate, UITableViewDat
     
     open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! ContactCell
-        cell.accessoryType = UITableViewCellAccessoryType.none
+        cell.accessoryType = UITableViewCell.AccessoryType.none
         //Convert CNContact to Contact
         let contact: Contact
         
@@ -374,7 +373,7 @@ open class ContactsPicker: UIViewController, UITableViewDelegate, UITableViewDat
         }
         
         if multiSelectEnabled  && selectedContacts.contains(where: { $0.contactId == contact.contactId }) {
-            cell.accessoryType = UITableViewCellAccessoryType.checkmark
+            cell.accessoryType = UITableViewCell.AccessoryType.checkmark
         }
         
         cell.updateContactsinUI(contact, indexPath: indexPath, subtitleType: subtitleCellValue)
@@ -387,14 +386,14 @@ open class ContactsPicker: UIViewController, UITableViewDelegate, UITableViewDat
         let selectedContact =  cell.contact!
         if multiSelectEnabled {
             //Keeps track of enable=ing and disabling contacts
-            if cell.accessoryType == UITableViewCellAccessoryType.checkmark {
-                cell.accessoryType = UITableViewCellAccessoryType.none
+            if cell.accessoryType == UITableViewCell.AccessoryType.checkmark {
+                cell.accessoryType = UITableViewCell.AccessoryType.none
                 selectedContacts = selectedContacts.filter(){
                     return selectedContact.contactId != $0.contactId
                 }
             }
             else {
-                cell.accessoryType = UITableViewCellAccessoryType.checkmark
+                cell.accessoryType = UITableViewCell.AccessoryType.checkmark
                 selectedContacts.append(selectedContact)
             }
         }
