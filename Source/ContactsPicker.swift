@@ -401,7 +401,7 @@ open class ContactsPicker: UIViewController, UITableViewDelegate, UITableViewDat
         let cell = tableView.cellForRow(at: indexPath) as! ContactCell
         let selectedContact =  cell.contact!
         if multiSelectEnabled {
-            //Keeps track of enable=ing and disabling contacts
+            //Keeps track of enabling and disabling contacts
             if cell.accessoryType == UITableViewCell.AccessoryType.checkmark {
                 cell.accessoryType = UITableViewCell.AccessoryType.none
                 selectedContacts = selectedContacts.filter(){
