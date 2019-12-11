@@ -219,7 +219,8 @@ open class ContactsPicker: UIViewController, UITableViewDelegate, UITableViewDat
         let error = NSError(domain: "JFContactPickerErrorDomain", code: 1, userInfo: [NSLocalizedDescriptionKey: "No Contacts Access"])
         
         switch CNContactStore.authorizationStatus(for: CNEntityType.contacts) {
-        case CNAuthorizationStatus.denied, CNAuthorizationStatus.restricted:
+        
+        case .denied, .restricted:
             //User has denied the current app to access the contacts.
             
             let alert = createErrorAlert()
@@ -231,7 +232,7 @@ open class ContactsPicker: UIViewController, UITableViewDelegate, UITableViewDat
             alert.addAction(okAction)
             self.present(alert, animated: true, completion: nil)
             
-        case CNAuthorizationStatus.notDetermined:
+        case .notDetermined:
             //This case means the user is prompted for the first time for allowing contacts
             contactsStore.requestAccess(for: CNEntityType.contacts, completionHandler: { (granted, error) -> Void in
                 //At this point an alert is provided to the user to provide access to contacts. This will get invoked if a user responds to the alert
@@ -245,7 +246,7 @@ open class ContactsPicker: UIViewController, UITableViewDelegate, UITableViewDat
                 }
             })
             
-        case  CNAuthorizationStatus.authorized:
+        case .authorized:
             //Authorization granted by user for this app.
             var contactsArray = [CNContact]()
             

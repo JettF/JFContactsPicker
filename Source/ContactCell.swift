@@ -56,7 +56,7 @@ class ContactCell: UITableViewCell {
         
         switch subtitleType {
             
-        case SubtitleCellValue.phoneNumber:
+        case .phoneNumber:
             let phoneNumberCount = contact.phoneNumbers.count
             
             if phoneNumberCount == 1  {
@@ -68,7 +68,8 @@ class ContactCell: UITableViewCell {
             else {
                 self.contactDetailTextLabel.text = GlobalConstants.Strings.phoneNumberNotAvaialable
             }
-        case SubtitleCellValue.email:
+        
+        case .email:
             let emailCount = contact.emails.count
         
             if emailCount == 1  {
@@ -80,9 +81,11 @@ class ContactCell: UITableViewCell {
             else {
                 self.contactDetailTextLabel.text = GlobalConstants.Strings.emailNotAvaialable
             }
-        case SubtitleCellValue.birthday:
+        
+        case .birthday:
             self.contactDetailTextLabel.text = contact.birthdayString
-        case SubtitleCellValue.organization:
+        
+        case .organization:
             self.contactDetailTextLabel.text = contact.company
         }
     }
