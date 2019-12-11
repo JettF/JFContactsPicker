@@ -143,10 +143,9 @@
 			};
 			buildConfigurationList = F4C1C9391BDF8AB7001AA643 /* Build configuration list for PBXProject "Contacts Picker" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
 				Base,
 			);
