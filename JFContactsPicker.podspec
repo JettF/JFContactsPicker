@@ -1,8 +1,8 @@
 Pod::Spec.new do |s|
   s.name             = "JFContactsPicker"
   s.module_name      = "JFContactsPicker"
-  s.version          = "2.0.0"
-  s.swift_version = '5.0'
+  s.version          = "2.1.0"
+  s.swift_version    = '5.0'
   s.summary          = "A contacts picker component for iOS written in swift using new contacts framework. Forked from 'EPContactsPicker'."
   s.description      = <<-DESC
 Features
