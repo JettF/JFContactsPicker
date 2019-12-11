@@ -222,9 +222,7 @@ open class ContactsPicker: UIViewController, UITableViewDelegate, UITableViewDat
         case CNAuthorizationStatus.denied, CNAuthorizationStatus.restricted:
             //User has denied the current app to access the contacts.
             
-            let productName = Bundle.main.infoDictionary!["CFBundleName"]!
-            
-            let alert = UIAlertController(title: "Unable to access contacts", message: "\(productName) does not have access to contacts. Kindly enable it in privacy settings ", preferredStyle: UIAlertController.Style.alert)
+            let alert = createErrorAlert()
             let okAction = UIAlertAction(title: "Ok", style: UIAlertAction.Style.default, handler: {  action in
                 self.contactDelegate?.contactPicker(self, didContactFetchFailed: error)
                 completion([], error)
@@ -239,7 +237,7 @@ open class ContactsPicker: UIViewController, UITableViewDelegate, UITableViewDat
                 //At this point an alert is provided to the user to provide access to contacts. This will get invoked if a user responds to the alert
                 if  (!granted ){
                     DispatchQueue.main.async(execute: { () -> Void in
-                        completion([], error! as NSError?)
+                        completion([], error as NSError?)
                     })
                 }
                 else{
@@ -293,7 +291,24 @@ open class ContactsPicker: UIViewController, UITableViewDelegate, UITableViewDat
                 print(error.localizedDescription)
             }
             
+        @unknown default:
+            let alert = createErrorAlert()
+            let okAction = UIAlertAction(title: "Ok", style: UIAlertAction.Style.default, handler: {  action in
+                self.contactDelegate?.contactPicker(self, didContactFetchFailed: error)
+                completion([], error)
+                self.dismiss(animated: true, completion: nil)
+            })
+            alert.addAction(okAction)
+            self.present(alert, animated: true, completion: nil)
         }
+    }
+    
+    private func createErrorAlert() -> UIAlertController {
+        let productName = Bundle.main.infoDictionary!["CFBundleName"]!
+        
+        let alert = UIAlertController(title: "Unable to access contacts", message: "\(productName) does not have access to contacts. Kindly enable it in privacy settings ", preferredStyle: UIAlertController.Style.alert)
+        
+        return alert
     }
     
     private func firstLetter(for contact: CNContact) -> String? {
